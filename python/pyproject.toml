@@ -1,0 +1,14 @@
+[project]
+name = "python"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "baml-py>=0.70,<=0.71",
+    "prettytable>=3.12.0",
+    "pydantic>=2.10.3",
+    "python-dotenv[cli]>=1.0.1",
+    "streamlit>=1.41.0",
+    "termcolor>=2.5.0",
+]

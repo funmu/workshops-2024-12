@@ -1,0 +1,136 @@
+// Defining a data model.
+class Resume {
+  name string @assert({{ this|length > 0 }})
+  email string
+  experience string[]
+  skills string[]
+  reason_to_hire ReasonToHire[]
+}
+
+class ReasonToHire {
+  quote string @alias(citation)
+  reason string @description(#"
+    use triple quotes for multi-line strings. e.g.
+    """
+    something
+    """
+  "#)
+}
+
+function ExtractResume(resume: string | image) -> Resume {
+  client OpenaiFallback
+  prompt #"
+    Extract from this content:
+    {{ ctx.output_format }}
+
+    DONT USE QUOTES AROUND STRINGS.    
+
+    {{ _.role('user') }}
+    {{ resume }}
+  "#
+}
+
+// Test the function with a sample resume. Open the VSCode playground to run this.
+test ShortResume {
+  functions [ExtractResume]
+  args {
+    resume #"
+      Vaibhav Gupta
+      vbv@boundaryml.com
+
+      Experience:
+      - Founder at BoundaryML
+      - CV Engineer at Google
+      - CV Engineer at Microsoft
+
+      Skills:
+      - Rust
+      - C++
+    "#
+  }
+}
+
+test LongResume {
+  functions [ExtractResume]
+  args {
+    resume #"
+Vaibhav Gupta
+linkedin/vaigup
+vbv@boundaryml.com
+@hellovai on Twitter + Github
+
+EXPERIENCE
+Boundary ML,
+Founder
+July 2022-Present
+Seattle, WA
+•
+We make LLMS easy to use for everyone
+
+DE Shaw,
+Software Engineer
+Jan 2021-May 2022
+New York, NY
+•
+Core infra things
+
+Google,
+Software Engineer
+Dec 2018-2020
+Seattle, WA
+•
+Augmented Reality,
+Depth Team
+•
+Technical Lead for on-device optimizations
+•
+Optimized and designed front
+facing depth algorithm
+on Pixel 4
+•
+Focus: C++ and SIMD on custom silicon
+Life Plus Plus,
+Founder
+July 2018-July 2019
+Seattle, WA
+•
+Bootcamp for landing people jobs in the computer science industry
+•
+Designed the curriculumn and sourced students to join the program
+•
+Organically grew to
+$
+50k in profit with 3 out of 4 people landing jobs
+Microsoft,
+Program Manager
+Sep 2017-July 2018
+Redmond, WA
+•
+Microsoft Mixed Reality (HoloLens + VR), 6DoF Tracking
+•
+Worked to establish the VR Arcade space with external enterprises
+•
+Guided various prototypes from concept stage to enterpise APIs
+Microsoft,
+Software Engineer
+Jul 2015-Sep 2017
+Redmond, WA
+•
+Microsoft HoloLens, Scene Reconstruction
+•
+Architected, implemented, tested fault resistent storage pipeline for mesh data across 2 teams
+•
+Scoped, designed, and implemented mesh delivery API surface with a team of 2
+•
+Responsible for runtime bring up on new hardware with custom instruction set and power constraints
+•
+Focus: C++ and SIMD on custom silicon
+
+EDUCATION
+University of Texas at Austin
+Aug 2012-May 2015
+Bachelors of Engineering, Integrated Circuits
+Bachelors of Computer Science
+    "#
+  }
+}
