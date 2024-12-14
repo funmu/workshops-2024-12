@@ -34,3 +34,12 @@ Turn BAML code --> python and typescript code by running the following command i
 cd python
 uv run baml-cli generate --from ../baml_src
 ```
+
+## Run the form-filler app
+
+Make sure to set up the OPENAI_API_KEY environment variable.
+
+```sh
+cd python
+uv run streamlit run form_filler_app.py
+```
